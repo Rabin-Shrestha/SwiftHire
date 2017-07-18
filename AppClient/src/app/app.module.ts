@@ -1,7 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router'
-import { HttpModule } from '@angular/http'
+import { RouterModule, Routes } from '@angular/router';
+import { HttpModule } from '@angular/http';
+import {AuthService  } from './services/auth/auth.service';
+
 
 //components
 import { AppComponent } from './app.component';
@@ -51,7 +53,7 @@ const APP_ROUTES = [
     HttpModule
   ],
   providers: [
-    PostServiceService
+    PostServiceService,AuthService
   ],
   bootstrap: [AppComponent]
 })
