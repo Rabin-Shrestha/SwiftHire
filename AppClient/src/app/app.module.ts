@@ -15,6 +15,8 @@ import { MyPostComponent } from './components/my-post/my-post.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { NewPostComponent } from './components/new-post/new-post.component';
 import { MainComponent } from './components/main/main.component';
+import { LoginGuard } from "./services/login.guard";
+AuthService
 
 //services
 import { PostServiceService } from './services/post-service.service';
@@ -31,7 +33,8 @@ const APP_ROUTES = [
       { path: 'myPost', component: MyPostComponent  },
       { path: 'notification', component: NotificationComponent  },
       { path: 'newPost', component: NewPostComponent  }
-    ]
+    ],
+    CanActivate:[LoginGuard]
   },
 ]
 
@@ -53,7 +56,7 @@ const APP_ROUTES = [
     HttpModule
   ],
   providers: [
-    PostServiceService,AuthService
+    PostServiceService,AuthService,LoginGuard
   ],
   bootstrap: [AppComponent]
 })

@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable,EventEmitter } from '@angular/core';
 import { AUTH_CONFIG } from './auth0-variables';
 import { Router } from '@angular/router';
 import * as auth0 from 'auth0-js';
 
 @Injectable()
 export class AuthService {
+
+  loggedIn:EventEmitter<string>;
 
   auth0 = new auth0.WebAuth({
     clientID: AUTH_CONFIG.clientID,
@@ -15,22 +17,26 @@ export class AuthService {
     scope: 'openid profile'
   });
 
-  constructor(public router: Router) {}
+ constructor(public router: Router) {
+   this.loggedIn=new EventEmitter();
+  }
 
   public login(): void {
     this.auth0.authorize();
   }
 
-  public handleAuthentication(): void {
+  public handleAuthentication(): void
+   {
     this.auth0.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
         window.location.hash = '';
         this.setSession(authResult);
         this.router.navigate(['/home']);
-      } else if (err) {
+      }
+      else if (err) {
         this.router.navigate(['/home']);
         console.log(err);
-        alert(`Error: ${err.error}. Check the console for further details.`);
+       // alert(`Error: ${err.error}. Check the console for further details.`);
       }
     });
   }
@@ -41,9 +47,11 @@ export class AuthService {
     localStorage.setItem('access_token', authResult.accessToken);
     localStorage.setItem('id_token', authResult.idToken);
     localStorage.setItem('expires_at', expiresAt);
-    localStorage.setItem('profile',JSON.stringify(authResult.idTokenPayload));
-    
-    
+    localStorage.setItem('profile', JSON.stringify(authResult.idTokenPayload));
+    this.loggedIn.emit((authResult.idTokenPayload));
+
+
+
   }
 
   public logout(): void {
@@ -51,6 +59,7 @@ export class AuthService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
+    localStorage.removeItem('profile');
     // Go back to the home route
     this.router.navigate(['/']);
   }
@@ -62,7 +71,7 @@ export class AuthService {
     return new Date().getTime() < expiresAt;
   }
 
- public getUser(){
+  public getUser() {
     return JSON.parse(localStorage.getItem('profile'));
   }
 

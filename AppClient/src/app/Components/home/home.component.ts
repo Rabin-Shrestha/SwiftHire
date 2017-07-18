@@ -9,25 +9,24 @@ import { AuthService } from '../../services/auth/auth.service';
 export class HomeComponent implements OnInit {
 
   private loggedInUser;
+  constructor(private auth: AuthService) {       
+        
 
-  constructor(private auth: AuthService) {
-    this.auth.handleAuthentication();
     
-  }
+   // getUserInfo();
 
+  }
   ngOnInit() {
-    this.getUserInfo();
-  }
-  getUserInfo() {
-    if (this.auth.isAuthenticated()) {
-     // console.log("User information ::!!");
-      
-      this.loggedInUser=this.auth.getUser();
-      
-      console.log(this.loggedInUser);
-      console.log("logged in user is :"+this.loggedInUser.name);
-      console.log("logged in user is :"+this.loggedInUser.nickname);
-    }
-  }
 
+    this.auth.handleAuthentication(); 
+    this.loggedInUser=JSON.parse(localStorage.getItem('profile'));
+
+    this.auth.loggedIn.subscribe(profile => {
+      console.log("Profile fetched here");
+       this.loggedInUser=(profile);
+        console.log(this.loggedInUser);       
+      }
+    );  
+  }
+ 
 }
